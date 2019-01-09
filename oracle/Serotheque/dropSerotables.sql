@@ -1,0 +1,15 @@
+delete from PRELEVEMENT_SERO_PROTOCOLE;
+delete from PROTOCOLE;
+delete from PRELEVEMENT_XENO;
+delete from PRELEVEMENT_SERO;
+delete from PRELEVEMENT_DELEGATE;
+delete from MALADIE_SERO;
+delete from MALADIE_DELEGATE;
+drop table PRELEVEMENT_SERO_PROTOCOLE;
+drop table PRELEVEMENT_SERO;
+drop table PRELEVEMENT_XENO;
+drop table PROTOCOLE;
+drop table PRELEVEMENT_DELEGATE;
+drop table MALADIE_SERO;
+drop table MALADIE_DELEGATE;
+drop table CHAMP_ENTITE_CONTEXTE;

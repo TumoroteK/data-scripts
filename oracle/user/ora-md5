@@ -1,0 +1,3 @@
+update UTILISATEUR set password = lower(DBMS_CRYPTO.HASH(UTL_RAW.CAST_TO_RAW(password), 2));
+
+

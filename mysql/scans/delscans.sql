@@ -1,0 +1,2 @@
+delete from tumo2interfacages.SCAN_TUBE where scan_terminale_id in (select scan_terminale_id from tumo2interfacages.SCAN_TERMINALE where name != 'TS00004113');
+delete from tumo2interfacages.SCAN_TERMINALE where name != 'TS00004113';

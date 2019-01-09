@@ -1,0 +1,99 @@
+from https://hub.docker.com/r/alexeiled/docker-oracle-xe-11g/
+
+This Dockerfile has been published as a trusted build to the public Docker Registry.
+How-To: Install and Use
+
+docker pull alexeiled/docker-oracle-xe-11g
+
+Run with 22, 1521 and 8080 ports opened:
+
+docker run -d -p 49160:22 -p 49161:1521 -p 49162:8080 -v /home/mathieu/exportDatabiotec14112016:/etc/entrypoint-initdb.d alexeiled/docker-oracle-xe-11g /bin/bash
+
+
+
+Connect database with following setting:
+
+hostname: localhost
+port: 49161
+sid: xe
+username: system
+password: oracle
+
+Password for SYS
+
+oracle
+
+Connect to Oracle Application Express web management console with following settings:
+
+url: http://localhost:49162/apex
+workspace: INTERNAL
+user: ADMIN
+password: oracle
+
+Login by SSH
+
+ssh root@localhost -p 49160
+password: admin
+
+
+----------- useful commands ----------
+list containers:
+sudo docker ps -l
+sudo docher ps -a (exited containers) 
+
+run container avec redirection ports:
+docker run -i -t -d -p 49160:22 -p 49161:1521 -p 49162:8080 alexeiled/docker-oracle-xe-11g
+
+list images:
+sudo docker images
+
+run images avec redirection ports:
+sudo docker run -i -t -p 49160:22 -p 49161:1521 -p 49162:8080 IMAGE_ID
+
+commit image:
+sudo docker commit -m 'update lyon2 v2.0.13' -a 'mathieu' <CONTAINER_ID> tumo2:version2013
+
+--remove image
+sudo docker rmi IMAGE_ID
+
+-- stop container
+sudo docker stop <CONTAINER_ID>
+
+-- exited containers
+sudo docker rm -v $(sudo docker ps -a -q -f status=exited)
+
+-- copier files par filesystem
+
+$ docker ps
+
+Get full container id
+
+$ docker inspect -f   '{{.Id}}'  SHORT_CONTAINER_ID-or-CONTAINER_NAME
+
+copy file :
+
+$ sudo cp path-file-host /var/lib/docker/aufs/mnt/FULL_CONTAINER_ID/PATH-NEW-FILE 
+PATH-NEW-FILE commence à la racine
+
+-- transeferer image par fichier
+sudo docker save -o tumo213_ora_image tumo2
+
+-- alexlei last image
+Hi guys, I do this...
+-- run container
+docker run -it -p 49160:22 -p 49161:1521 -p 49162:8080 biot:gse /bin/bash
+
+-- inside container
+sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" /u01/app/oracle/product/11.2.0/xe/network/admin/listener.ora
+su - oracle
+lsnrctl start
+sqlplus / as sysdba
+
+-- inside sqlplus
+startup
+
+
+
+
+
+

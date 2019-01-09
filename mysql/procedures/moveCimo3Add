@@ -1,0 +1,70 @@
+DELIMITER !
+
+
+DROP PROCEDURE IF EXISTS moveCimo3 !
+CREATE PROCEDURE moveCimo3 ()
+BEGIN
+DECLARE i INT;
+DECLARE i2 INT;
+DECLARE id INT;
+DECLARE code VARCHAR(10);
+DECLARE libelle VARCHAR(100);
+DECLARE libelle_en VARCHAR(100);
+DECLARE done INT(1);
+
+DECLARE cur CURSOR FOR SELECT * FROM CIMO3_TOPO_ADD;	
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+SET i = (SELECT max(SID) from master);
+SET i2 = (SELECT max(LID) from libelle);
+
+
+
+OPEN cur;
+	add_loop : LOOP
+    		FETCH cur INTO id, code, libelle, libelle_en;
+
+		IF done=1 THEN
+				LEAVE add_loop;
+			END IF;
+
+		SET i = (SELECT i+1);
+		SET i2 = (SELECT i2+1);
+		
+		insert into MASTER values(i,
+					code,
+					code,
+  					code,
+  					'7',
+  					'AD',
+  					NULL,
+  					NULL,
+  					NULL,
+  					NULL,
+  					NULL,
+  					NULL,
+  					NULL,
+  					'1',
+  					NULL,
+  					'INCa',
+  					'Topo INCa ajoutée pour correspondre à la liste',
+  					1);
+		
+		insert into LIBELLE values(i2,
+					i,
+  					'AD',
+  					'1',
+  					libelle,
+  					libelle,
+  					libelle_en,
+  					NULL,
+  					NULL,
+  					NULL,
+  					NULL,
+  					'INCa',
+  					'Topo INCa ajoutée pour correspondre à la liste'
+					);
+	
+	END LOOP add_loop;
+CLOSE cur;
+END!
