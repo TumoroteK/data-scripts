@@ -18,7 +18,6 @@ drop table IF EXISTS LOGICIEL;
 drop table IF EXISTS SCAN_TUBE;
 drop table IF EXISTS SCAN_TERMINALE;
 drop table IF EXISTS SCAN_DEVICE;
-drop table IF EXISTS 
 
 -- nettoyage fantomes
 delete from FANTOME;
