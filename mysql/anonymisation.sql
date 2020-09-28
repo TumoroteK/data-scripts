@@ -19,5 +19,7 @@ drop table IF EXISTS SCAN_TUBE;
 drop table IF EXISTS SCAN_TERMINALE;
 drop table IF EXISTS SCAN_DEVICE;
 
+truncate table OPERATION;
+
 -- nettoyage fantomes
 delete from FANTOME;
