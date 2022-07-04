@@ -24,7 +24,13 @@ BEGIN
 	delete from CONSENT_TYPE where plateforme_id = _pf1_Id and consent_type_id not in (select distinct consent_type_id from PRELEVEMENT where consent_type_id is not null);
 
 	-- CONTENEUR_PLATEFORME
+	-- dans un premier temps, mise à jour de la plateforme sur le conteneur
 	update CONTENEUR_PLATEFORME set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
+	-- CONTENEUR
+	update CONTENEUR set plateforme_orig_id = _pf1_Id where plateforme_orig_id = _pf2_Id;
+	-- dans un 2e temps, suppression des lignes qui ne sont plus nécessaires car le conteneur n'est plus partagé
+	delete from CONTENEUR_PLATEFORME where plateforme_id = _pf1_id and conteneur_id in (select c.conteneur_id from CONTENEUR c where c.plateforme_orig_id = _pf1_id);
+	
 
 	-- CONTENEUR_TYPE
 	update CONTENEUR_TYPE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
@@ -55,7 +61,12 @@ BEGIN
 	delete from ENCEINTE_TYPE where plateforme_id = _pf1_Id and enceinte_type_id not in (select distinct enceinte_type_id from ENCEINTE where enceinte_type_id is not null);
 
 	-- IMPRIMANTE
+	-- il peut y avoir un même nom d'imprimante présent dans les plateformes => on ne peut pas renommer car il est utilisé pour s'y connecter (connu au niveau réseau)
+	-- export des cas pour vigilance
+	select * from IMPRIMANTE where plateforme_id in ( _pf1_Id, _pf2_Id ) and nom in (select nom from IMPRIMANTE where plateforme_id in ( _pf1_Id, _pf2_Id ) group by nom having count(1) > 1) order by nom, plateforme_id;
+	-- on garde les doublons : chaque utilisateur ne verra qu'une fois l'imprimante qui lui convient comme actuellement. Le doublon sera visible que par l'admin.
 	update IMPRIMANTE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
+ 
 
 	-- ITEM
 	update ITEM set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
@@ -63,7 +74,9 @@ BEGIN
 	delete from ITEM where plateforme_id = _pf1_Id and item_id not in (select distinct item_id from ANNOTATION_VALEUR where item_id is not null);
 
 	-- MODELE
-	update MODELE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
+	-- il peut y avoir un même nom de modele présent dans les plateformes => on renomme ceux de la 2e plateforme
+	update MODELE set nom = concat(nom, ' - ', (select nom from PLATEFORME where plateforme_id = _pf2_Id)) where plateforme_id = _pf2_Id;
+	update MODELE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;	
 
 	-- MODE_PREPA
 	update MODE_PREPA set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
@@ -82,8 +95,8 @@ BEGIN
 
 	-- NON_CONFORMITE
 	update NON_CONFORMITE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
-	update OBJET_NON_CONFORME o join (select n1.non_conformite_id as id1, n2.non_conformite_id as id2 from NON_CONFORMITE n1 join NON_CONFORMITE n2 on n1.nom=n2.nom where n1.plateforme_id= _pf1_id and n2.plateforme_id=_pf1_id and n1.non_conformite_id < n2.non_conformite_id) zz on zz.id2=o.non_conformite_id set o.non_conformite_id=zz.id1;
-	delete from NON_CONFORMITE where plateforme_id = _pf1_Id and non_conformite_id not in (select distinct non_conformite_id from OBJET_NON_CONFORME where non_conformite_id is not null);
+	update OBJET_NON_CONFORME o join (select n1.non_conformite_id as id1, n2.non_conformite_id as id2, n1.conformite_type_id as type1, n2.conformite_type_id as type2 from NON_CONFORMITE n1 join NON_CONFORMITE n2 on n1.nom=n2.nom and n1.conformite_type_id=n2.conformite_type_id where n1.plateforme_id= _pf1_id and n2.plateforme_id=_pf1_id and n1.non_conformite_id < n2.non_conformite_id) zz on zz.id2=o.non_conformite_id set o.non_conformite_id=zz.id1;
+	delete from NON_CONFORMITE where plateforme_id = _pf1_Id and (non_conformite_id, conformite_type_id) not in (select distinct non_conformite_id, conformite_type_id from OBJET_NON_CONFORME where non_conformite_id is not null);
 
 	-- PLATEFORME_ADMINISTRATEUR
 	delete from PLATEFORME_ADMINISTRATEUR where plateforme_id = _pf2_Id;
@@ -117,7 +130,7 @@ BEGIN
 	delete from RISQUE where plateforme_id = _pf1_Id and risque_id not in (select distinct risque_id from PRELEVEMENT_RISQUE where risque_id is not null);
 
 	-- TABLE_ANNOTATION
-	update TABLE_ANNOTATION set nom = concat(nom, ' - ', (select nom from PLATEFORME where plateforme_id = _pf2_Id)) where plateforme_id = _pf1_Id;
+	update TABLE_ANNOTATION set nom = concat(nom, ' - ', (select nom from PLATEFORME where plateforme_id = _pf2_Id)) where plateforme_id = _pf2_Id;
 	update TABLE_ANNOTATION set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
 
 	-- UTILISATEUR
@@ -130,7 +143,16 @@ BEGIN
 	update CONTENEUR set plateforme_orig_id = _pf1_Id where plateforme_orig_id = _pf2_Id;
 	
 	-- PROFIL
+	-- les profils avec l'attribut ADMIN=1 sont généralement définis sur toutes les plateformes. Ils ne s'appuient pas sur la table DROIT_OBJET : les droits sont systématiquement les mêmes 
+	-- => rattachement des utilisateurs de la plateforme 2 sur le profil de la plateforme 1
 	update PROFIL set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
+	update PROFIL_UTILISATEUR pu 
+		join (select p1.profil_id as id1, p2.profil_id as id2 from PROFIL p1 join PROFIL p2 on p1.nom=p2.nom 
+			where p1.plateforme_id= _pf1_id and p2.plateforme_id= _pf1_id and p1.profil_id < p2.profil_id) zz 
+		on zz.id2=pu.profil_id 
+	set pu.profil_id=zz.id1;
+	delete from DROIT_OBJET where profil_id in (select profil_id from PROFIL where plateforme_id = _pf1_Id and admin = true);
+	delete from PROFIL where plateforme_id = _pf1_Id and profil_id not in (select distinct profil_id from PROFIL_UTILISATEUR where profil_id is not null);
 
 		
 	-- STATS_INDICATEUR_PLATEFORME
