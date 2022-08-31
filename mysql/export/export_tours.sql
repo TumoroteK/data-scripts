@@ -66,11 +66,14 @@ LEFT JOIN OBJET_STATUT os ON e.objet_statut_id = os.objet_statut_id
 LEFT JOIN MODE_PREPA mp ON e.mode_prepa_id = mp.mode_prepa_id 
 LEFT JOIN SERVICE s on p.service_preleveur_id=s.service_id 
 LEFT JOIN ETABLISSEMENT st on s.etablissement_id=st.etablissement_id 
-WHERE p.date_prelevement between '2021-10-01' and '2021-12-31' 
+WHERE 
+	p.date_prelevement between '2022-06-01' and '2022-07-31'
+	and b.BANQUE_ID = 212
+-- WHERE p.date_prelevement between '2021-10-01' and '2021-12-31' 
 -- WHERE p.date_prelevement between '2022-01-01' and '2022-03-31' 
 -- WHERE p.date_prelevement between '2022-04-01'  and '2022-06-17' 
 
-INTO OUTFILE '2021-T4.csv' FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n';
+INTO OUTFILE '/data/2022-juin-juil-Covicompare-P.csv' FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n';
 
 
 
