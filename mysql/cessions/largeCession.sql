@@ -31,7 +31,7 @@ BEGIN
 		update ECHANTILLON e join TEMP_TRSFT z on z.id=e.echantillon_id set emplacement_id=null, quantite=0, objet_statut_id = (select if(cession_type_id=3,5,2) from CESSION where cession_id = id_cession); -- where e.objet_statut_id = 1;
 
 	ELSEIF id_entite = 8 THEN 
-		insert into CEDER_OBJET (CESSION_ID, OBJET_ID, ENTITE_ID, QUANTITE, QUANTITE_UNITE_ID) select id_cession, z.id, id_entite, p.quantite, p.quantite_unite_id 
+		insert into CEDER_OBJET (CESSION_ID, OBJET_ID, ENTITE_ID, QUANTITE, QUANTITE_UNITE_ID) select id_cession, z.id, id_entite, if(p.quantite is not null, p.quantite, p.volume), if(p.quantite is not null, p.quantite_unite_id, p.volume_unite_id) 
 			from PROD_DERIVE p join TEMP_TRSFT z on z.id=p.prod_derive_id; -- where p.objet_statut_id = 1;
 			
 		update EMPLACEMENT e join PROD_DERIVE p on p.emplacement_id = e.emplacement_id join TEMP_TRSFT z on z.id=p.prod_derive_id set e.objet_id=null, e.entite_id=null, e.vide=1; 
@@ -40,12 +40,12 @@ BEGIN
 		insert into OPERATION (utilisateur_id, entite_id, operation_type_id, date_, objet_id) select id_utilisateur, id_entite, 13, now(), z.id 
 			from PROD_DERIVE p join TEMP_TRSFT z on z.id=p.prod_derive_id; -- where p.objet_statut_id = 1;
 			
-		insert into RETOUR (entite_id, objet_id, date_sortie, temp_moyenne, operateur_id, cession_id, observations, old_emplacement_adrl, conteneur_id)
+		insert into RETOUR (entite_id, objet_id, date_sortie, temp_moyenne, collaborateur_id, cession_id, observations, old_emplacement_adrl, conteneur_id)
 			select id_entite, z.id, if(c.depart_date is not null, c.depart_date, if(c.destruction_date is not null, c.destruction_date, now())), 20.0, c.executant_id, c.cession_id, 'cession automatisee par fichier', get_adrl(p.emplacement_id), get_conteneur(p.emplacement_id) 
 			from PROD_DERIVE p join TEMP_TRSFT z on z.id=p.prod_derive_id 
 			join CESSION c on c.cession_id = id_cession; -- where p.objet_statut_id = 1;
 			
-		update PROD_DERIVE p join TEMP_TRSFT z on z.id=p.prod_derive_id set emplacement_id=null, quantite=0,
+		update PROD_DERIVE p join TEMP_TRSFT z on z.id=p.prod_derive_id set emplacement_id=null, quantite=0, volume=IF(volume is not null, 0, null),
 			objet_statut_id = (select if(cession_type_id=3,5,2) from CESSION where cession_id = id_cession); -- where p.objet_statut_id = 1;
 
 
