@@ -35,7 +35,7 @@ p.cong_depart as 'congelationaudepartsite', p.cong_arrivee as 'congelationalarri
 (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 2 AND op.objet_id = p.prelevement_id) as 'dateheuresaisie',
 (SELECT ut.login FROM UTILISATEUR ut JOIN OPERATION op ON ut.utilisateur_id = op.utilisateur_id WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 2 AND op.objet_id = p.prelevement_id) as 'utilisateur_saisie',
 m.patient_id, pat.nom as 'nomusuel', pat.prenom as 'prenom', pat.date_naissance as 'datenaissance', pat.sexe as 'sexe', patient_etat as 'etatdupatient',
-(SELECT replace(a.texte, '\r\n', ' ') from ANNOTATION_VALEUR a where a.champ_annotation_id=152 and a.objet_id=p.prelevement_id) as 'commentaires',
+(SELECT replace(a.texte, '\r\n\t', ' ') from ANNOTATION_VALEUR a where a.champ_annotation_id=152 and a.objet_id=p.prelevement_id) as 'commentaires',
 (SELECT a.anno_date from ANNOTATION_VALEUR a where a.champ_annotation_id=171 and a.objet_id=p.prelevement_id) as 'kdatededecongelation'
 FROM PRELEVEMENT p INNER JOIN NATURE n on p.nature_id = n.nature_id
 LEFT JOIN PRELEVEMENT_TYPE pt ON p.prelevement_type_id = pt.prelevement_type_id
@@ -44,3 +44,8 @@ LEFT JOIN MALADIE m on p.maladie_id = m.maladie_id
 LEFT JOIN PATIENT pat ON m.patient_id = pat.patient_id
 WHERE p.banque_id = 14) z2 on z1.prelevement_id = z2.prelevement_id
 INTO OUTFILE 'd:\\sepages.csv'FIELDS TERMINATED BY '&|&' LINES TERMINATED BY '&||&';
+
+-- nettoyages du champ commentaire après export (car replace COMMENTAIRE ne semble pas fonctionner..)
+-- sed "s/\r\n\t/ /g" -i sepages.csv> sepages2.tsv
+-- sed "s/&|&/\t/g" sepages2.tsv > sepages3.tsv
+-- sed "s/&||&/\n/g" sepages3.tsv > sepages4.tsv
