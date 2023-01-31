@@ -5,3 +5,5 @@ NB : les colonnes non traitées dans la requête 1 sont valorisés avec :
 - ???REQ_NUMERO_2???
 - ???REQ_NUMERO_3???
 - ???REQ_NUMERO_4???
+
+un index sur OBJET_NON_CONFORMITE.OBJET_ID pourrait peut-être permettre de passer la requête en une seule fois
