@@ -10,7 +10,9 @@ DELIMITER !
 /* valide la cession */
 /* création OPERATION modification cession */
 
-create temporary table TEMP_TRSFT (id int(10));
+-- Pour pouvoir alimenter cette table, il faut la créer en dehors de la procédure. Par contre, il faut bien respecter son nom pour que 
+-- la procédure fonctionne correctement
+-- create temporary table TEMP_TRSFT (id int(10));
 
 DROP PROCEDURE IF EXISTS largeCession!
 CREATE PROCEDURE largeCession(id_cession INT, id_entite INT, id_utilisateur INT)
