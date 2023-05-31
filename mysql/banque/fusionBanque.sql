@@ -4,7 +4,7 @@ BEGIN
 	DECLARE banque2_id INT(10);
 	
 	SET banque1_id = (select banque_id from BANQUE where nom = 'BANQUE1');
-	SET banque2_id = (select banque_id from BANQUE where nom = 'BANQUE1');
+	SET banque2_id = (select banque_id from BANQUE where nom = 'BANQUE2');
 
 	-- codes
 	update CODE_SELECT set banque_id=banque1_id where banque_id=banque2_id;
@@ -20,7 +20,8 @@ BEGIN
 	-- module recherche
 	update AFFICHAGE set banque_id=banque1_id where banque_id=banque2_id;
 	update REQUETE set banque_id=banque1_id where banque_id=banque2_id;
-	update RECHERCHE set banque_id=banque1_id where banque_id=banque2_id;
+	-- banque_id n'existe pas dans RECHERCHE...
+	-- update RECHERCHE set banque_id=banque1_id where banque_id=banque2_id;
 
 	-- stockage
 	update CONTENEUR_BANQUE set banque_id=banque1_id where banque_id=banque2_id; -- doublons éventuels
