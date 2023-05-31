@@ -52,7 +52,8 @@ SELECT e.echantillon_id as 'echantillon_id',
 	-- (SELECT ut.login FROM UTILISATEUR ut JOIN OPERATION op ON ut.utilisateur_id = op.utilisateur_id WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 3 AND op.objet_id = e.echantillon_id) as 'utilisateur_saisie', 
 
 FROM ECHANTILLON e 
-JOIN BANQUE b on e.banque_id=b.banque_id 
+JOIN BANQUE b on e.banque_id=b.banque_id
+JOIN PLATEFORME pl on b.plateforme_id=pl.plateforme_id 
 JOIN PRELEVEMENT p on e.prelevement_id=p.prelevement_id 
 JOIN NATURE n on p.nature_id = n.nature_id
 LEFT JOIN PRELEVEMENT_TYPE pt ON p.prelevement_type_id = pt.prelevement_type_id 
@@ -67,13 +68,16 @@ LEFT JOIN MODE_PREPA mp ON e.mode_prepa_id = mp.mode_prepa_id
 LEFT JOIN SERVICE s on p.service_preleveur_id=s.service_id 
 LEFT JOIN ETABLISSEMENT st on s.etablissement_id=st.etablissement_id 
 WHERE 
-	p.date_prelevement between '2022-06-01' and '2022-07-31'
-	and b.BANQUE_ID = 212
+--	p.date_date_arrivee between '2022-01-01' and '2022-03-31'
+--	and 
+	pl.nom='CRB'
+--	p.date_prelevement between '2022-06-01' and '2022-07-31'
+	and b.BANQUE_ID = 218
 -- WHERE p.date_prelevement between '2021-10-01' and '2021-12-31' 
 -- WHERE p.date_prelevement between '2022-01-01' and '2022-03-31' 
 -- WHERE p.date_prelevement between '2022-04-01'  and '2022-06-17' 
 
-INTO OUTFILE '/data/2022-juin-juil-Covicompare-P.csv' FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n';
+INTO OUTFILE '/data/export_biosuport.csv' FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\n';
 
 
 
