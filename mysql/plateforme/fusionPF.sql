@@ -89,6 +89,17 @@ BEGIN
 	update PRELEVEMENT_RISQUE p join (select r1.risque_id as id1, r2.risque_id as id2 from RISQUE r1 join RISQUE r2 on r1.nom=r2.nom where r1.plateforme_id= _pf1_id and r2.plateforme_id=_pf1_id and r1.risque_id < r2.risque_id) zz on zz.id2=p.risque_id set p.risque_id=zz.id1;
 	delete from RISQUE where plateforme_id = _pf1_Id and risque_id not in (select distinct risque_id from PRELEVEMENT_RISQUE where risque_id is not null);
 
+	-- Fusion des types (conteneur et enceinte) : 
+	-- CONTENEUR_TYPE
+	update CONTENEUR_TYPE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
+	update CONTENEUR c join (select c1.conteneur_type_id as id1, c2.conteneur_type_id as id2 from CONTENEUR_TYPE c1 join CONTENEUR_TYPE c2 on c1.type=c2.type where c1.plateforme_id= _pf1_id and c2.plateforme_id=_pf1_id and c1.conteneur_type_id < c2.conteneur_type_id) zz on zz.id2=c.conteneur_type_id set c.conteneur_type_id=zz.id1;
+	delete from CONTENEUR_TYPE where plateforme_id = _pf1_Id and conteneur_type_id not in (select distinct conteneur_type_id from CONTENEUR where conteneur_type_id is not null);
+
+	-- ENCEINTE_TYPE
+	update ENCEINTE_TYPE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
+	update ENCEINTE e join (select e1.enceinte_type_id as id1, e2.enceinte_type_id as id2 from ENCEINTE_TYPE e1 join ENCEINTE_TYPE e2 on e1.type=e2.type where e1.plateforme_id= _pf1_id and e2.plateforme_id=_pf1_id and e1.enceinte_type_id < e2.enceinte_type_id) zz on zz.id2=e.enceinte_type_id set e.enceinte_type_id=zz.id1;
+	delete from ENCEINTE_TYPE where plateforme_id = _pf1_Id and enceinte_type_id not in (select distinct enceinte_type_id from ENCEINTE where enceinte_type_id is not null);
+
 	-- ------------------------------------------------------------------------------------
 	-- THESAURUS - FIN
 	-- ------------------------------------------------------------------------------------
@@ -160,17 +171,7 @@ BEGIN
 			where plateforme_orig_id = _pf1_Id)
 	order by code, plateforme_orig_id;
 
-	-- Fusion des types (conteneur et enceinte) : 
-	-- CONTENEUR_TYPE
-	update CONTENEUR_TYPE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
-	update CONTENEUR c join (select c1.conteneur_type_id as id1, c2.conteneur_type_id as id2 from CONTENEUR_TYPE c1 join CONTENEUR_TYPE c2 on c1.type=c2.type where c1.plateforme_id= _pf1_id and c2.plateforme_id=_pf1_id and c1.conteneur_type_id < c2.conteneur_type_id) zz on zz.id2=c.conteneur_type_id set c.conteneur_type_id=zz.id1;
-	delete from CONTENEUR_TYPE where plateforme_id = _pf1_Id and conteneur_type_id not in (select distinct conteneur_type_id from CONTENEUR where conteneur_type_id is not null);
 
-	-- ENCEINTE_TYPE
-	update ENCEINTE_TYPE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
-	update ENCEINTE e join (select e1.enceinte_type_id as id1, e2.enceinte_type_id as id2 from ENCEINTE_TYPE e1 join ENCEINTE_TYPE e2 on e1.type=e2.type where e1.plateforme_id= _pf1_id and e2.plateforme_id=_pf1_id and e1.enceinte_type_id < e2.enceinte_type_id) zz on zz.id2=e.enceinte_type_id set e.enceinte_type_id=zz.id1;
-	delete from ENCEINTE_TYPE where plateforme_id = _pf1_Id and enceinte_type_id not in (select distinct enceinte_type_id from ENCEINTE where enceinte_type_id is not null);
-	
 	-- mise de jour de la plateforme d'origine :
 	update CONTENEUR set plateforme_orig_id = _pf1_Id where plateforme_orig_id = _pf2_Id;
 
