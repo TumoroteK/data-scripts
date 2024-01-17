@@ -1,3 +1,6 @@
+-- gestion encodage.
+SET NAMES 'utf8';
+
 SELECT 'Id', 'Code échantillon', 'Type d''échantillon','Quantité', 'Unité de la quantité', 'Date de stockage','Opérateur', 'Emplacement', 'Température de stockage', 'Statut', 'Mode de préparation', 
 'Conforme après traitement','Non conformité de l''échantillon après traitement', 'Evts de stockage',	'Type de support', 	'Centrifugeuse 1', 'Action NC Echantillon', 'Viabilité', 'Code échantillon',	'Incidence NC Echantillon',	'Description NC Echantillon', 'Centrifugeuse 2',	'NC corrigée après Action', 'Autre préparation',	'Collection',	'Code prélèvement', 'Nature','Date de prélèvement', 'Conforme à l''arrivée',	'Non conformité à l''arrivée', 'Etablissement préleveur',	'Service préleveur', 'Nombre de conditionnements', 	'Transporteur', 'N° Réception',	'Visite',	'Action NC 2',	'Incidence NC 2', 'Description NC 2', 'NC 2 corrigée après action', 'Action NC 1', 'Incidence NC 1',	'Description NC 1', 'NC 1 corrigée après Action', 'Commentaire'
 UNION ALL
@@ -68,16 +71,16 @@ LEFT JOIN MODE_PREPA mp ON e.mode_prepa_id = mp.mode_prepa_id
 LEFT JOIN SERVICE s on p.service_preleveur_id=s.service_id 
 LEFT JOIN ETABLISSEMENT st on s.etablissement_id=st.etablissement_id 
 WHERE 
---	p.date_date_arrivee between '2022-01-01' and '2022-03-31'
---	and 
+	p.date_arrivee between '2023-01-01 00:00' and '2023-06-30 23:59'
+	and 
 	pl.nom='CRB'
 --	p.date_prelevement between '2022-06-01' and '2022-07-31'
-	and b.BANQUE_ID = 218
+--	and b.BANQUE_ID = 218
 -- WHERE p.date_prelevement between '2021-10-01' and '2021-12-31' 
 -- WHERE p.date_prelevement between '2022-01-01' and '2022-03-31' 
 -- WHERE p.date_prelevement between '2022-04-01'  and '2022-06-17' 
 
-INTO OUTFILE '/data/export_biosuport.csv' FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\n';
+INTO OUTFILE '/data/2023-S1_export_crb.txt' FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\n';
 
 
 

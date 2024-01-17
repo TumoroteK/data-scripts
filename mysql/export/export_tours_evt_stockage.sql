@@ -1,3 +1,5 @@
+SET NAMES 'utf8';
+
 SELECT 'identifiant échantillon', 'Code échantillon', 'identifiant évènement', 'date de sortie', 'date de retour','température moyenne', 'stérile', 'impact', 'collaborateur', 'observations', 'ancien emplacement', 'nom du conteneur', 'précisions'
 UNION ALL
     SELECT r.objet_id,
@@ -27,9 +29,9 @@ UNION ALL
 		LEFT JOIN INCIDENT i ON r.incident_id = i.incident_id
 		LEFT JOIN CONTENEUR t on t.conteneur_id = r.conteneur_id
     WHERE 
-		p.date_arrivee between '2022-01-01' and '2022-12-31'
+		p.date_arrivee between '2023-01-01 00:00' and '2023-06-30 23:59'
 		and pl.NOM='CRB'
     order by 1
 
-INTO OUTFILE '/data/2022—CRB-evt_stockage.csv' FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\n';
+INTO OUTFILE '/data/2023-S1—-CRB-evt_stockage.txt' FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\n';
 ;
