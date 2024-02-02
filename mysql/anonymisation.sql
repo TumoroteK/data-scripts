@@ -15,6 +15,13 @@ update CESSION c join CONTRAT a on c.contrat_id=a.contrat_id set c.etude_titre=a
 
 truncate table OPERATION;
 
+-- nettoyage fantomes
+delete from FANTOME;
+
+
+-- ajout v4 :
+-- les scripts ci-dessous ne sont à appliquer que pour des environnements de formation.
+-- pour les environnements de test dont les utilisateurs sont plus ciblés, ce n'est pas nécessaire
 -- collaborateurs / utilisateurs
 update COLLABORATEUR set NOM = concat('COLLAB', collaborateur_id), prenom = left(prenom, 3);
 
@@ -24,10 +31,12 @@ update COORDONNEE set tel = null where tel is not null;
 update UTILISATEUR set email = null where email is not null;
 update UTILISATEUR set login = concat('login', utilisateur_id) where login not in ('ADMIN_TUMO', 'dufay', 'dufayadmin', 'eleve1','eleve2','eleve3','eleve4','eleve5','eleve6','eleve7')
 
--- fichier
-update ANNOTATION_VALEUR set fichier_id = null where fichier_id is not null;
+-- gestion des fichiers qui ne sont pas copiés sur le file system.
 update ECHANTILLON set CR_ANAPATH_ID = null where CR_ANAPATH_ID is not null;
+-- pour ANNOTATION_VALEUR, on ne peut pas mettre le champ à null car bien que ce soit un champ nullable, il ne peut pas être null si les autres colonnes : ALPHANUM, TEXTE ... sont également nulles
+-- => delete de l'annotation valeur. Par contre, attention, si ce champ est défini comme obligatoire, l'utilisateur ne pourra pas sauvegarder une modification sur l'objet associé ...
+delete from ANNOTATION_VALEUR where fichier_id is not null;
 delete from FICHIER;
+-- fin ajout v4
 
--- nettoyage fantomes
-delete from FANTOME;
+
