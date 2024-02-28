@@ -1,7 +1,7 @@
-/*Le script va céder totalement tous les échantillons ou les dérivés dont stockés dans une liste de conteneur*/
+/*Le script va céder totalement tous les échantillons ou les dérivés qui sont stockés dans une liste de conteneur*/
 /* par appel de la procédure largeCesion donc par remplissage préalable de la table TEMP_TRSFT */
 /* la table TEMP_TRSFT sera alimentée par deux tables temporaires intermédiaires permettant le dump de données utiles en cas de restauration */ 
-/* la destruction du contenu du conteneur va donc se faire en deux sessions: une pour les échantillons, une pour les dérivés */
+/* la destruction du contenu du conteneur va donc se faire en deux cessions: une pour les échantillons, une pour les dérivés */
 
 /* sauvegarde */
 mysqldump -u TUMO_SLS -p TUMO_SLS_HEMA --routines > dumpHemao_beforeCuvesDestruction.sql
