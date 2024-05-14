@@ -15,7 +15,7 @@ insert into PLATEFORME_ADMINISTRATEUR select max(plateforme_id), (select utilisa
 -- !!il y a un problème à ce niveau car dans l'interface il n'est pas possible de créer le profil 'Admin de collection' PROFIL.ADMIN=1
 -- qui est un profil avec des droits pré-définis et elevés au niveau de la collection
 -- il peux être utile alors d'insérer en base ce profil
-insert into PROFIL (profil_id, nom, admin, archive, plateforme_id) select max(profil_id) + 1, 'Administrateur de collection', 1, 0, (select max(plateforme_id) from PLATEFORME) from PROFIL
+insert into PROFIL (profil_id, nom, anonyme, profil_export, profil_statistiques, admin, acces_administration, archive, plateforme_id) select max(profil_id) + 1, 'Administrateur de collection', 0, 2, 1, 1, 1, 0, (select max(plateforme_id) from PLATEFORME) from PROFIL;
 
 -- créer ses annotations dans Administration>Annotations
 
