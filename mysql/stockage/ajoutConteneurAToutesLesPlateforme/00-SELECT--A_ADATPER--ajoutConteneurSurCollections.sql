@@ -1,0 +1,2 @@
+-- copier les lignes 2 à 8 du fichier 01-INSERT--A_ADATPER--ajoutConteneurSurCollections.sql APRES avoir renseigné les valeurs liées au contexte d'appel.
+-- lancer ce script permet d'éventuellement faire des contrôles en amont et de garder une trace des éléments qui seront insérés
