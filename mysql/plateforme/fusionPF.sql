@@ -36,7 +36,7 @@ BEGIN
 	update ECHANTILLON e join (select e1.echantillon_type_id as id1, e2.echantillon_type_id as id2 from ECHANTILLON_TYPE e1 join ECHANTILLON_TYPE e2 on e1.type=e2.type where e1.plateforme_id= _pf1_id and e2.plateforme_id=_pf1_id and e1.echantillon_type_id < e2.echantillon_type_id) zz on zz.id2=e.echantillon_type_id set e.echantillon_type_id=zz.id1;
 	delete from ECHANTILLON_TYPE where plateforme_id = _pf1_Id and echantillon_type_id not in (select distinct echantillon_type_id from ECHANTILLON where echantillon_type_id is not null);
 
-	-- ECHANT_QUALITE
+	-- ECHAN_QUALITE
 	update ECHAN_QUALITE set plateforme_id = _pf1_Id where plateforme_id = _pf2_Id;
 	update ECHANTILLON e join (select e1.echan_qualite_id as id1, e2.echan_qualite_id as id2 from ECHAN_QUALITE e1 join ECHAN_QUALITE e2 on e1.echan_qualite=e2.echan_qualite where e1.plateforme_id= _pf1_id and e2.plateforme_id=_pf1_id and e1.echan_qualite_id < e2.echan_qualite_id) zz on zz.id2=e.echan_qualite_id set e.echan_qualite_id=zz.id1;
 	delete from ECHAN_QUALITE where plateforme_id = _pf1_Id and echan_qualite_id not in (select distinct echan_qualite_id from ECHANTILLON where echan_qualite_id is not null);
