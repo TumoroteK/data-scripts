@@ -6,5 +6,5 @@ NB : la V4 prend en compte le critère sur la date de prélèvement
 Pour la transformation en excel :
 	• Choisir le format 65001 : Unicode (UTF-8), vers la fin de la liste (cf ci-dessous)
 	• Choisir le format texte pour les colonnes : 
-		○ T : N° Laboratoire
+		○ T : N° Laboratoire (2e champ prélèvement - après les champs échantillons)
 		○ AV : Nom Patient (avant dernière colonne)
