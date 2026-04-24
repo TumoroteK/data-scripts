@@ -4,7 +4,7 @@ demande du CHU de Nîmes
    •	Collaborateur associé à ce compte
    •	Service(s) du collaborateur
    •	Autorisation(s) de l'utilisateur: 
-	si possible: (Plateforme) - collection - profil (inclure le profil administreur de plateforme)
+	si possible: (Plateforme) - collection - profil (inclure le profil administrateur de plateforme)
    •	Plateforme d'origine
    •	Date de création du compte
 ** export de tous les comptes actifs ou non avec les données et la date de désactivation
